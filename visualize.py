@@ -3,6 +3,7 @@ from matplotlib.patches import Polygon
 import matplotlib.colors as mcolors
 
 def plot_cspace(cspace):
+    """Plot the configuration space grid"""
     cmap = mcolors.ListedColormap(["white", "blue", "red"])
     bounds = [0, 1, 2, 3]
     norm = mcolors.BoundaryNorm(bounds, cmap.N)
@@ -24,15 +25,15 @@ def plot_cspace(cspace):
     plt.savefig("cspace.png", dpi=300)
 
 def plot_workspace(arm, theta1, theta2, obstacles):
-    """Disegna il braccio e gli ostacoli nel workspace"""
+    """Plot the workspace with the arm in a given configuration and obstacles"""
     fig, ax = plt.subplots()
 
-    # braccio
+    # Arm
     segments = arm.get_segments(theta1, theta2)
     for (p0, p1) in segments:
         ax.plot([p0[0], p1[0]], [p0[1], p1[1]], "bo-", linewidth=3)
 
-    # ostacoli
+    # Obstacles
     for obs in obstacles:
         if hasattr(obs, "bounds"):  # shapely polygon
             xmin, ymin, xmax, ymax = obs.bounds

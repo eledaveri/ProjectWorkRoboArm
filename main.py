@@ -7,7 +7,7 @@ import numpy as np
 def main():
     arm = PlanarArm2DOF([1.0, 1.0])
 
-    # Definizione ostacolo nel workspace
+    # Define some obstacles
     obstacles = [
     make_rect(0.6, 0.7, 0.2, 0.3),
     make_rect(0.8, 0.9, 0.8, 0.9),
@@ -16,11 +16,11 @@ def main():
 ]
 
 
-    # Visualizza workspace con braccio in una configurazione
+    # Plot workspace with arm in a sample configuration
     theta1, theta2 = np.pi/4, np.pi/3
     plot_workspace(arm, theta1, theta2, obstacles)
 
-    # Costruisci C-space
+    # Build C-space
     cspace = ConfigurationSpace(
         arm=arm,
         theta1_range=(0, 2*np.pi),
@@ -30,7 +30,7 @@ def main():
     )
     cspace.build()
 
-    # Visualizza C-space
+    # Plot C-space
     plot_cspace(cspace)
 
 if __name__ == "__main__":
