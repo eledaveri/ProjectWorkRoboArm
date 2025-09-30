@@ -1,7 +1,7 @@
 from arm import PlanarArm2DOF
 from obstacles import make_rect, make_circle, make_polygon
 from cspace import ConfigurationSpace
-from visualize import plot_cspace, plot_workspace
+from visualize import plot_cspace, plot_workspace, plot_cspace_components
 import numpy as np
 
 def main():
@@ -32,6 +32,7 @@ def main():
 
     # Plot C-space
     plot_cspace(cspace)
+    plot_cspace_components(cspace)
 
 if __name__ == "__main__":
     main()
