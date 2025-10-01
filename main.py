@@ -1,7 +1,8 @@
 from arm import PlanarArm2DOF
 from obstacles import make_rect, make_circle, make_polygon
 from cspace import ConfigurationSpace
-from visualize import plot_cspace, plot_workspace, plot_cspace_components
+from visualize import plot_cspace, plot_workspace, plot_cspace_components, plot_cspace_path, plot_workspace_path
+from qlearning import QLearning2DOF
 import numpy as np
 
 def main():
@@ -33,6 +34,19 @@ def main():
     # Plot C-space
     plot_cspace(cspace)
     plot_cspace_components(cspace)
+
+    # Q-learning# Q-learning
+    start = (0, 0)
+    goal = (cspace.N1-1, cspace.N2-1)
+    ql = QLearning2DOF(cspace, start=start, goal=goal)
+    ql.train(num_episodes=500)
+
+    # Percorso trovato
+    path = ql.get_path()
+    print("Learned path:", path)
+
+    # Plotta workspace
+    plot_workspace_path(arm, path, cspace, start=start, goal=goal)
 
 if __name__ == "__main__":
     main()
