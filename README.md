@@ -252,10 +252,15 @@ Goal reached in 46 steps!
 ### Generated Outputs
 
 1. **`workspace.png`**: Shows the arm in initial configuration with obstacles
+    ![workspace](images/workspace.png)
 2. **`cspace.png`**: Visualizes free space (white) and C-space obstacles (blue)
+     ![cspace](images/cspace.png)
 3. **`cspace_components.png`**: Shows connected components of free space
+    ![cspace components](images/cspace_components.png)
 4. **`workspace_path.png`**: Displays the learned trajectory in workspace coordinates
+    ![workspace path](images/workspace_path_collision-100.png)
 5. **`robot_motion.gif`**: Animated visualization of the robot executing the learned path
+    ![robot motion](images/training_path_collision-100.gif)
 
 ### Performance Metrics
 
