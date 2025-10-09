@@ -1,7 +1,7 @@
 from arm import PlanarArm2DOF
 from obstacles import make_rect, make_circle, make_polygon
 from cspace import ConfigurationSpace
-from visualize import plot_cspace, plot_workspace, plot_cspace_components, plot_cspace_path, plot_workspace_path
+from visualize import plot_cspace, plot_workspace, plot_cspace_components, plot_cspace_path, plot_workspace_path, animate_training_path
 from qlearning import QLearning2DOF
 import numpy as np
 
@@ -36,17 +36,34 @@ def main():
     plot_cspace_components(cspace)
 
     # Q-learning# Q-learning
-    start = (0, 0)
-    goal = (cspace.N1-1, cspace.N2-1)
-    ql = QLearning2DOF(cspace, start=start, goal=goal)
-    ql.train(num_episodes=500)
+    #start = (0, 0)
+    #goal = (cspace.N1-1, cspace.N2-1)
+    start = (40, 5)
+    goal = (55, 50)
+    ql = QLearning2DOF(
+        cspace, 
+        start=start, 
+        goal=goal,
+        alpha=0.1,        # Learning rate
+        gamma=0.95,       # Discount factor (vicino a 1 per percorsi lunghi)
+        epsilon=0.9       # Esplorazione iniziale alta
+        )
+
+    ql.train(
+        num_episodes=5000,   # Più episodi perché molti termineranno presto
+        max_steps=500,
+        verbose=True
+    )
 
     # Percorso trovato
     path = ql.get_path()
     print("Learned path:", path)
-
+    animate_training_path(arm, path, cspace, obstacles, "robot_motion.gif")
+    
     # Plotta workspace
     plot_workspace_path(arm, path, cspace, start=start, goal=goal)
+
+
 
 if __name__ == "__main__":
     main()

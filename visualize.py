@@ -3,8 +3,9 @@ from matplotlib.patches import Polygon
 import matplotlib.colors as mcolors
 from scipy.ndimage import label
 import numpy as np
+from matplotlib.animation import FuncAnimation, PillowWriter
 
-def plot_cspace(cspace):
+def plot_cspace(cspace, filename="cspace.png"):
     """Plot the configuration space grid"""
     cmap = mcolors.ListedColormap(["white", "Blue"])  # 0=free, 1=obstacle
     bounds = [0, 1, 2]
@@ -28,7 +29,7 @@ def plot_cspace(cspace):
     cbar.ax.set_yticklabels(["Free", "Obstacle"])
 
     plt.tight_layout()
-    plt.savefig("cspace.png", dpi=300)
+    plt.savefig(filename, dpi=300)
     plt.show()
 
 def plot_cspace_components(cspace, filename="cspace_components.png"):
@@ -86,7 +87,7 @@ def plot_cspace_components(cspace, filename="cspace_components.png"):
 
 
 
-def plot_workspace(arm, theta1, theta2, obstacles):
+def plot_workspace(arm, theta1, theta2, obstacles, filename="workspace.png"):
     """Plot the workspace with the arm in a given configuration and obstacles"""
     fig, ax = plt.subplots()
 
@@ -107,7 +108,7 @@ def plot_workspace(arm, theta1, theta2, obstacles):
     ax.set_ylabel("y")
     ax.set_title("Workspace: robot + obstacles")
     plt.show()
-    plt.savefig("workspace.png", dpi=300)
+    plt.savefig(filename, dpi=300)
 
 def plot_cspace_path(cspace, path, filename="cspace_path.png"):
     """
@@ -153,15 +154,15 @@ def plot_cspace_path(cspace, path, filename="cspace_path.png"):
 
 def plot_workspace_path(arm, path, cspace, start=None, goal=None, filename="workspace_path.png"):
     """
-    Plotta la traiettoria del robot nel workspace (x,y) con start e goal evidenziati.
+    Plot the robot trajectory in the workspace (x,y) with highlighted start and goal.
     
     Args:
-        arm: oggetto PlanarArm2DOF
-        path: lista di stati (i,j) nel C-space
-        cspace: oggetto ConfigurationSpace
-        start: stato iniziale (i,j)
-        goal: stato goal (i,j)
-        filename: nome file immagine di output
+        arm: PlanarArm2DOF object,
+        path: list of (i,j) states representing the path,
+        cspace: ConfigurationSpace object,
+        start: (i,j) tuple for start state (optional),
+        goal: (i,j) tuple for goal state (optional),
+        filename: output image file name
     """
     start = start if start else (0, 0)
     goal = goal if goal else (cspace.N1-1, cspace.N2-1)
@@ -169,17 +170,17 @@ def plot_workspace_path(arm, path, cspace, start=None, goal=None, filename="work
     plt.figure(figsize=(6,6))
     ax = plt.gca()
 
-    # Disegna ostacoli (Shapely Polygons)
+    # Draw the obstacles (Shapely Polygons)
     for obs in cspace.obstacles:
         if isinstance(obs, Polygon):
             x, y = obs.exterior.xy
             ax.fill(x, y, color='k', alpha=0.3)
 
-    # Converti path da (i,j) a θ1, θ2
+    # Converts the path from (i,j) to θ1, θ2
     theta1_path = [cspace.theta1_vals[i] for i,j in path]
     theta2_path = [cspace.theta2_vals[j] for i,j in path]
 
-    # Calcola coordinate end-effector
+    # Compute the coordinates of the end-effector
     x_path = []
     y_path = []
     for th1, th2 in zip(theta1_path, theta2_path):
@@ -187,10 +188,10 @@ def plot_workspace_path(arm, path, cspace, start=None, goal=None, filename="work
         x_path.append(pos[0])
         y_path.append(pos[1])
 
-    # Traiettoria
+    # Trajectory
     plt.plot(x_path, y_path, 'r-o', markersize=3, linewidth=2, label="Path")
 
-    # Evidenzia start e goal
+    # Highlight start and goal
     start_pos = arm.forward_kinematics(cspace.theta1_vals[start[0]], cspace.theta2_vals[start[1]])
     goal_pos = arm.forward_kinematics(cspace.theta1_vals[goal[0]], cspace.theta2_vals[goal[1]])
     plt.scatter(*start_pos, color='green', s=100, label='Start')
@@ -204,3 +205,71 @@ def plot_workspace_path(arm, path, cspace, start=None, goal=None, filename="work
     plt.tight_layout()
     plt.savefig(filename, dpi=300)
     plt.show()
+
+def animate_training_path(arm, path, cspace, obstacles, filename="training_animation.gif"):
+    """Create an animation of the robot arm moving along the learned path."""
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+    
+    # Obstacles
+    for obs in obstacles:
+        if hasattr(obs, 'exterior'):
+            patch = Polygon(list(obs.exterior.coords), facecolor='red', alpha=0.3)
+            ax.add_patch(patch)
+    
+    # Start and goal positions
+    i_s, j_s = path[0]
+    i_g, j_g = path[-1]
+    start_pos = arm.forward_kinematics(cspace.theta1_vals[i_s], cspace.theta2_vals[j_s])
+    goal_pos = arm.forward_kinematics(cspace.theta1_vals[i_g], cspace.theta2_vals[j_g])
+    ax.scatter(*start_pos, color='green', s=200, marker='*', label='Start')
+    ax.scatter(*goal_pos, color='gold', s=200, marker='*', label='Goal')
+    
+    # Setup plot
+    ax.set_xlim(-2.5, 2.5)
+    ax.set_ylim(-2.5, 2.5)
+    ax.set_aspect('equal')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_title('Robot Arm Motion')
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    
+    # Animated elements
+    line1, = ax.plot([], [], 'bo-', linewidth=3, markersize=8)
+    line2, = ax.plot([], [], 'b-', alpha=0.5, linewidth=1)
+    trail_x, trail_y = [], []
+    
+    def init():
+        line1.set_data([], [])
+        line2.set_data([], [])
+        return line1, line2
+    
+    def update(frame):
+        i, j = path[frame]
+        th1 = cspace.theta1_vals[i]
+        th2 = cspace.theta2_vals[j]
+        
+        # Arm
+        segments = arm.get_segments(th1, th2)
+        x_arm = [0] + [seg[1][0] for seg in segments]
+        y_arm = [0] + [seg[1][1] for seg in segments]
+        line1.set_data(x_arm, y_arm)
+        
+        # Trace
+        pos = arm.forward_kinematics(th1, th2)
+        trail_x.append(pos[0])
+        trail_y.append(pos[1])
+        line2.set_data(trail_x, trail_y)
+        
+        ax.set_title(f'Robot Arm Motion - Step {frame}/{len(path)-1}')
+        return line1, line2
+    
+    anim = FuncAnimation(fig, update, frames=len(path), init_func=init,
+                        blit=True, interval=100, repeat=True)
+    
+    # Save as GIF
+    writer = PillowWriter(fps=10)
+    anim.save(filename, writer=writer)
+    print(f"Animazione salvata in {filename}")
+    plt.close()
