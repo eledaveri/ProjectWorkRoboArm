@@ -87,9 +87,9 @@ def plot_cspace_components(cspace, filename="cspace_components.png"):
 
 
 
-def plot_workspace(arm, theta1, theta2, obstacles, filename="workspace.png"):
+#def plot_workspace(arm, theta1, theta2, obstacles, filename="workspace.png"):
     """Plot the workspace with the arm in a given configuration and obstacles"""
-    fig, ax = plt.subplots()
+    """fig, ax = plt.subplots()
 
     # Arm
     segments = arm.get_segments(theta1, theta2)
@@ -108,7 +108,56 @@ def plot_workspace(arm, theta1, theta2, obstacles, filename="workspace.png"):
     ax.set_ylabel("y")
     ax.set_title("Workspace: robot + obstacles")
     plt.show()
+    plt.savefig(filename, dpi=300)"""
+
+def plot_workspace(arm, theta1, theta2, obstacles, start=None, goal=None, cspace=None, filename="workspace.png"):
+    """
+    Plot the workspace with the arm in a given configuration and obstacles.
+    Optionally, show start and goal positions from the C-space.
+    
+    Args:
+        arm: PlanarArm2DOF object
+        theta1, theta2: current joint angles
+        obstacles: list of obstacle objects
+        start: (i,j) tuple in C-space for start (optional)
+        goal: (i,j) tuple in C-space for goal (optional)
+        cspace: ConfigurationSpace object (required if start/goal are provided)
+        filename: output image file name
+    """
+    fig, ax = plt.subplots()
+
+    # Arm segments
+    segments = arm.get_segments(theta1, theta2)
+    for (p0, p1) in segments:
+        ax.plot([p0[0], p1[0]], [p0[1], p1[1]], "bo-", linewidth=3)
+
+    # Obstacles
+    for obs in obstacles:
+        if hasattr(obs, "bounds"):  # shapely polygon
+            patch = Polygon(list(obs.exterior.coords), facecolor="red", alpha=0.4)
+            ax.add_patch(patch)
+
+    # Plot start and goal positions if provided
+    if start is not None and cspace is not None:
+        start_pos = arm.forward_kinematics(cspace.theta1_vals[start[0]], cspace.theta2_vals[start[1]])
+        ax.scatter(*start_pos, color='green', s=100, label='Start')
+
+    if goal is not None and cspace is not None:
+        goal_pos = arm.forward_kinematics(cspace.theta1_vals[goal[0]], cspace.theta2_vals[goal[1]])
+        ax.scatter(*goal_pos, color='blue', s=100, label='Goal')
+
+    if (start is not None and cspace is not None) or (goal is not None and cspace is not None):
+        ax.legend()
+
+    ax.set_aspect("equal")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_title("Workspace: robot + obstacles")
+
+    plt.tight_layout()
     plt.savefig(filename, dpi=300)
+    plt.show()
+
 
 def plot_cspace_path(cspace, path, filename="cspace_path.png"):
     """
@@ -206,9 +255,18 @@ def plot_workspace_path(arm, path, cspace, start=None, goal=None, filename="work
     plt.savefig(filename, dpi=300)
     plt.show()
 
-def animate_training_path(arm, path, cspace, obstacles, filename="training_animation.gif"):
-    """Create an animation of the robot arm moving along the learned path."""
-
+def animate_training_path(arm, path, cspace, obstacles, start, goal, filename="training_animation.gif"):
+    """Create an animation of the robot arm moving along the learned path.
+    
+    Args:
+        arm: PlanarArm2DOF object
+        path: list of (i,j) states representing the path
+        cspace: ConfigurationSpace object
+        obstacles: list of obstacle objects
+        start: (i,j) tuple for start state
+        goal: (i,j) tuple for goal state
+        filename: output filename for the animation
+    """
     fig, ax = plt.subplots(figsize=(8, 8))
     
     # Obstacles
@@ -217,9 +275,9 @@ def animate_training_path(arm, path, cspace, obstacles, filename="training_anima
             patch = Polygon(list(obs.exterior.coords), facecolor='red', alpha=0.3)
             ax.add_patch(patch)
     
-    # Start and goal positions
-    i_s, j_s = path[0]
-    i_g, j_g = path[-1]
+    # Start and goal positions usando le coordinate passate
+    i_s, j_s = start
+    i_g, j_g = goal
     start_pos = arm.forward_kinematics(cspace.theta1_vals[i_s], cspace.theta2_vals[j_s])
     goal_pos = arm.forward_kinematics(cspace.theta1_vals[i_g], cspace.theta2_vals[j_g])
     ax.scatter(*start_pos, color='green', s=200, marker='*', label='Start')
@@ -271,5 +329,5 @@ def animate_training_path(arm, path, cspace, obstacles, filename="training_anima
     # Save as GIF
     writer = PillowWriter(fps=10)
     anim.save(filename, writer=writer)
-    print(f"Animazione salvata in {filename}")
+    print(f"Animation saved in {filename}")
     plt.close()

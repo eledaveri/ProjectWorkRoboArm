@@ -13,14 +13,11 @@ def main():
     make_rect(0.6, 0.7, 0.2, 0.3),
     make_rect(0.8, 0.9, 0.8, 0.9),
     make_circle(-0.2, 0.5, 0.1),
-    make_polygon([(-0.5, -0.5), (-0.3, -0.4), (-0.4, -0.2)])
-]
-
-
-    # Plot workspace with arm in a sample configuration
-    theta1, theta2 = np.pi/4, np.pi/3
-    plot_workspace(arm, theta1, theta2, obstacles)
-
+    make_polygon([(-0.6, -0.6), (-0.1, -0.9), (-0.4, -0.2)])
+    ]
+    start = (45, 15)
+    goal = (55, 50)
+ 
     # Build C-space
     cspace = ConfigurationSpace(
         arm=arm,
@@ -30,16 +27,14 @@ def main():
         obstacles=obstacles
     )
     cspace.build()
-
+    theta1 = cspace.theta1_vals[start[0]]
+    theta2 = cspace.theta2_vals[start[1]]
+    
     # Plot C-space
     plot_cspace(cspace)
     plot_cspace_components(cspace)
-
-    # Q-learning# Q-learning
-    #start = (0, 0)
-    #goal = (cspace.N1-1, cspace.N2-1)
-    start = (40, 5)
-    goal = (55, 50)
+    plot_workspace(arm, theta1, theta2, obstacles, start=start, goal=goal, cspace=cspace)
+    # Q-learning
     ql = QLearning2DOF(
         cspace, 
         start=start, 
@@ -58,10 +53,10 @@ def main():
     # Percorso trovato
     path = ql.get_path()
     print("Learned path:", path)
-    animate_training_path(arm, path, cspace, obstacles, "robot_motion.gif")
+    animate_training_path(arm, path, cspace, obstacles, start=start, goal=goal, filename="training_path_collision-100_bis.gif")
     
     # Plotta workspace
-    plot_workspace_path(arm, path, cspace, start=start, goal=goal)
+    plot_workspace_path(arm, path, cspace, start=start, goal=goal, filename="workspace_path_collision-100_bis.png")
 
 
 

@@ -5,6 +5,7 @@ class PlanarArm2DOF:
     def __init__(self, link_lengths):
         self.l1, self.l2 = link_lengths
 
+
     def forward_kinematics(self, theta1, theta2):
         """Returns the (x,y) position of the end-effector"""
         x = self.l1 * np.cos(theta1) + self.l2 * np.cos(theta1 + theta2)
