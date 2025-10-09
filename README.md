@@ -141,15 +141,6 @@ Or install from a requirements file:
 pip install -r requirements.txt
 ```
 
-**requirements.txt**:
-```
-numpy>=1.19.0
-matplotlib>=3.3.0
-shapely>=1.7.0
-scipy>=1.5.0
-pillow>=8.0.0
-```
-
 ## Usage
 
 ### Basic Execution
@@ -322,16 +313,6 @@ Solution: Choose different start/goal indices that are in free space.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Future Improvements
-
-- [ ] Implement continuous Q-learning with function approximation
-- [ ] Add support for 3-DOF or higher manipulators
-- [ ] Implement other RL algorithms (SARSA, Deep Q-Networks)
-- [ ] Add dynamic obstacles
-- [ ] Optimize collision detection for real-time performance
-- [ ] Include inverse kinematics solver
-- [ ] Add ROS integration for physical robot control
 
 ## References
 
