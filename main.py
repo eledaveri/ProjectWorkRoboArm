@@ -1,7 +1,7 @@
 from arm import PlanarArm2DOF
 from obstacles import make_rect, make_circle, make_polygon
 from cspace import ConfigurationSpace
-from visualize import plot_cspace, plot_workspace, plot_cspace_components, plot_cspace_path, plot_workspace_path, animate_training_path
+from visualize import plot_cspace, plot_workspace, plot_cspace_components, plot_workspace_path, animate_training_path
 from qlearning import QLearning2DOF
 import numpy as np
 
