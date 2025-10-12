@@ -32,12 +32,14 @@ def plot_cspace(cspace, filename="cspace.png"):
     plt.savefig(filename, dpi=300)
     plt.show()
 
-def plot_cspace_components(cspace, filename="cspace_components.png"):
+def plot_cspace_components(cspace, start=None, goal=None, filename="cspace_components.png"):
     """
     Plot C-space with connected components of free space.
 
     Args:
         cspace: ConfigurationSpace object
+        start: (i,j) tuple for start state (optional)
+        goal: (i,j) tuple for goal state (optional)
         filename: output image file name
     """
 
@@ -77,6 +79,25 @@ def plot_cspace_components(cspace, filename="cspace_components.png"):
         norm=norm,
         aspect="auto"
     )
+    
+    # Plot start and goal if provided
+    if start is not None:
+        theta1_start = cspace.theta1_vals[start[0]]
+        theta2_start = cspace.theta2_vals[start[1]]
+        plt.scatter(theta1_start, theta2_start, color='lime', s=150, 
+                   marker='*', edgecolors='black', linewidths=1.5, 
+                   label='Start', zorder=5)
+    
+    if goal is not None:
+        theta1_goal = cspace.theta1_vals[goal[0]]
+        theta2_goal = cspace.theta2_vals[goal[1]]
+        plt.scatter(theta1_goal, theta2_goal, color='yellow', s=150, 
+                   marker='*', edgecolors='black', linewidths=1.5, 
+                   label='Goal', zorder=5)
+    
+    if start is not None or goal is not None:
+        plt.legend(loc='upper right')
+    
     plt.xlabel(r"$\theta_1$ (rad)")
     plt.ylabel(r"$\theta_2$ (rad)")
     plt.title("Configuration Space - Connected Components")
@@ -84,7 +105,6 @@ def plot_cspace_components(cspace, filename="cspace_components.png"):
     plt.tight_layout()
     plt.savefig(filename, dpi=300)
     plt.show()
-
 
 
 #def plot_workspace(arm, theta1, theta2, obstacles, filename="workspace.png"):

@@ -15,9 +15,15 @@ def main():
     make_circle(-0.2, 0.5, 0.1),
     make_polygon([(-0.6, -0.6), (-0.1, -0.9), (-0.4, -0.2)])
     ]
-    start = (45, 15)
-    goal = (55, 50)
+
+    # Start and goal in the same connected component
+    #start = (45, 15)
+    #goal = (55, 50)
  
+    # Start and goal in different connected components (to test)
+    start = (15, 45)
+    goal = (55, 50)
+
     # Build C-space
     cspace = ConfigurationSpace(
         arm=arm,
@@ -32,8 +38,8 @@ def main():
     
     # Plot C-space
     plot_cspace(cspace)
-    plot_cspace_components(cspace)
-    plot_workspace(arm, theta1, theta2, obstacles, start=start, goal=goal, cspace=cspace)
+    plot_cspace_components(cspace, start=start, goal=goal, filename="cspace_components_impossible_start_goal.png")
+    plot_workspace(arm, theta1, theta2, obstacles, start=start, goal=goal, cspace=cspace, filename="workspace_impossible_start_goal.png")
     # Q-learning
     ql = QLearning2DOF(
         cspace, 
@@ -53,11 +59,10 @@ def main():
     # Percorso trovato
     path = ql.get_path()
     print("Learned path:", path)
-    animate_training_path(arm, path, cspace, obstacles, start=start, goal=goal, filename="training_path_collision-100_bis.gif")
+    animate_training_path(arm, path, cspace, obstacles, start=start, goal=goal, filename="training_path_impossible.gif")
     
     # Plotta workspace
-    plot_workspace_path(arm, path, cspace, start=start, goal=goal, filename="workspace_path_collision-100_bis.png")
-
+    plot_workspace_path(arm, path, cspace, start=start, goal=goal, filename="workspace_path_impossible.png")
 
 
 if __name__ == "__main__":
