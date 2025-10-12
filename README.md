@@ -53,6 +53,7 @@ where l₁ and l₂ are the link lengths.
 Q-learning is a model-free reinforcement learning algorithm that learns an optimal policy by estimating action-values (Q-values):
 
 **Update Rule**:
+
 $$
 Q(s, a) \leftarrow Q(s, a) + \alpha \big[ r + \gamma \max_{a'} Q(s', a') - Q(s, a) \big]
 $$
@@ -261,6 +262,7 @@ The training pipeline produces the following visualizations:
     ![cspace components](images/cspace_components_impossible_start_goal.png)
 3. **`workspace.png`**: Shows the arm in initial configuration with obstacles, highlighting start (green) and goal (blue) positions
     ![workspace](images/workspace.png)
+    ![workspace](images/workspace_impossible_start_goal.png)
 4. **`robot_motion.gif`**: Animated visualization of the complete robot arm executing the learned path, with:
    - The two-link arm shown in blue
    - Obstacles shown in red with transparency
