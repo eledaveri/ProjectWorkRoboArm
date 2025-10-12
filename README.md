@@ -32,9 +32,9 @@ The **configuration space** (C-space) is a mathematical representation where eac
 - **C-Obs**: $$C_{\text{obs}} $$ = Set of configurations where the arm collide with obstacles 
 - **C-Free**: $$C_{\text{obs}} $$ = Set of configurations where the arm doesn't collide with obstacles
 - **C-Space**: 
-    $$
-    C = C_{\text{free}} \cup C_{\text{obs}}
-    $$
+$$
+C = C_{\text{free}} \cup C_{\text{obs}}
+$$
 - **Robot Motion Planning**: Finding a collision-free path in C-space that moves the robot from start to goal as fast as possible and then map it to a  
     valid motion in the workspace.
 
