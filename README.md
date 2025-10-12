@@ -316,9 +316,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## References
 
-1. Watkins, C. J., & Dayan, P. (1992). Q-learning. *Machine Learning*, 8(3-4), 279-292.
-2. LaValle, S. M. (2006). *Planning Algorithms*. Cambridge University Press.
-3. Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction*. MIT Press.
+1. Battistelli, G, Autonomous Agents and Intelligent Robotics course (2024)
+2. Watkins, C. J., & Dayan, P. (1992). Q-learning. *Machine Learning*, 8(3-4), 279-292.
+3. LaValle, S. M. (2006). *Planning Algorithms*. Cambridge University Press.
+4. Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction*. MIT Press.
 
 ## Author
 
