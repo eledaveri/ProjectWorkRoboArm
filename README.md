@@ -30,11 +30,8 @@ This project implements robot motion planning for a two-link planar robotic arm 
 The **configuration space** (C-space) is a mathematical representation where each point corresponds to a unique configuration of the robot. For a 2-DOF planar arm:
 - **Configuration**: (θ₁, θ₂) where θ₁ and θ₂ are joint angles
 - **C-Obs**: $$C_{\text{obs}} $$ = Set of configurations where the arm collide with obstacles 
-- **C-Free**: $$C_{\text{obs}} $$ = Set of configurations where the arm doesn't collide with obstacles
-- **C-Space**: 
-$$
-C = C_{\text{free}} \cup C_{\text{obs}}
-$$
+- **C-Free**: $$C_{\text{free}} $$ = Set of configurations where the arm doesn't collide with obstacles
+- **C-Space**: $C = C_{\text{free}} \cup C_{\text{obs}}$
 - **Robot Motion Planning**: Finding a collision-free path in C-space that moves the robot from start to goal as fast as possible and then map it to a  
     valid motion in the workspace.
 
@@ -82,8 +79,7 @@ Where:
 - Each step: -1 - 0.01·(Manhattan distance to goal)
 
 **Epsilon Decay**:
-- Exponential decay is applied each episode:  
-  $$ \epsilon \leftarrow \max(\epsilon_{\min}, \epsilon \cdot (\epsilon_{\min}/\epsilon_{\text{initial}})^{1/num\_episodes}) $$
+- Exponential decay is applied each episode: $\epsilon \leftarrow \max(\epsilon_{\min}, \epsilon \cdot (\epsilon_{\min}/\epsilon_{\text{initial}})^{1/num\_episodes})$
 - Starts at 0.9, decays to 0.01 over training.
 
 The algorithm explores initially (high ε) and gradually exploits learned knowledge (low ε) through epsilon decay.
@@ -192,8 +188,13 @@ cspace = ConfigurationSpace(
 
 **Start and Goal**:
 ```python
-start = (45, 15)   # Indices in C-space grid
-goal = (55, 50)
+    # Start and goal in the same connected component
+    start = (45, 15)
+    goal = (55, 50)
+ 
+    # Start and goal in different connected components (to test)
+    start = (15, 45)
+    goal = (55, 50)
 ```
 
 **Q-Learning Parameters**:
@@ -387,9 +388,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## References
 
 1. Battistelli, G, Autonomous Agents and Intelligent Robotics course (2024)
-2. Watkins, C. J., & Dayan, P. (1992). Q-learning. *Machine Learning*, 8(3-4), 279-292.
-3. LaValle, S. M. (2006). *Planning Algorithms*. Cambridge University Press.
-4. Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction*. MIT Press.
 
 ## Author
 
