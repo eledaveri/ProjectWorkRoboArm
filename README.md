@@ -31,7 +31,8 @@ The **configuration space** (C-space) is a mathematical representation where eac
 - **Configuration**: (θ₁, θ₂) where θ₁ and θ₂ are joint angles
 - **C-Obs**: $$C_{\text{obs}} $$ = Set of configurations where the arm collide with obstacles 
 - **C-Free**: $$C_{\text{obs}} $$ = Set of configurations where the arm doesn't collide with obstacles
-- **C-Space**: $$
+- **C-Space**: 
+    $$
     C = C_{\text{free}} \cup C_{\text{obs}}
     $$
 - **Robot Motion Planning**: Finding a collision-free path in C-space that moves the robot from start to goal as fast as possible and then map it to a  
@@ -353,7 +354,7 @@ The extracted path represents the best trajectory found by the algorithm.
 **Exploration Rate (ε)**:
 - Initial high value (0.9): Encourages exploration
 - Decays to minimum (0.01): Shifts to exploitation
-- Exponential decay: `epsilon *= (epsilon_min / epsilon_initial)^(1/num_episodes)` per episode
+- Exponential decay: `epsilon_decay = (epsilon_min / epsilon_initial)^(1/num_episodes)`, then `epsilon *= epsilon_decay` per episode
 
 
 **Grid Resolution**:
