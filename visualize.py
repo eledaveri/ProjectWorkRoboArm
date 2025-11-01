@@ -347,7 +347,7 @@ def animate_training_path(arm, path, cspace, obstacles, start, goal, filename="t
                         blit=True, interval=100, repeat=True)
     
     # Save as GIF
-    writer = PillowWriter(fps=10)
+    writer = PillowWriter(fps=20)
     anim.save(filename, writer=writer)
     print(f"Animation saved in {filename}")
     plt.close()

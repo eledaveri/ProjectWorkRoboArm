@@ -38,19 +38,19 @@ class QLearning2DOF:
         """Executes action in the environment, returns next_state, reward, done"""
         i, j = state
         
-        # Compute new state based on action
+        # Compute new state based on action (CON PERIODICITÀ)
         if action == 0:    # theta1+
-            i_new = min(i+1, self.N1-1)
+            i_new = (i + 1) % self.N1
             j_new = j
         elif action == 1:  # theta1-
-            i_new = max(i-1, 0)
-            j_new = j  
+            i_new = (i - 1) % self.N1
+            j_new = j
         elif action == 2:  # theta2+
             i_new = i
-            j_new = min(j+1, self.N2-1)
+            j_new = (j + 1) % self.N2
         elif action == 3:  # theta2-
             i_new = i
-            j_new = max(j-1, 0)
+            j_new = (j - 1) % self.N2
         else:
             raise ValueError(f"Invalid action: {action}")
 

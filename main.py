@@ -17,19 +17,20 @@ def main():
     ]
 
     # Start and goal in the same connected component
-    #start = (45, 15)
-    #goal = (55, 50)
+    goal = (140, 25)
+    start  = (115, 60)
+
  
     # Start and goal in different connected components (to test)
-    start = (15, 45)
-    goal = (55, 50)
+    #start = (15, 45)
+    #goal = (55, 50)
 
     # Build C-space
     cspace = ConfigurationSpace(
         arm=arm,
         theta1_range=(0, 2*np.pi),
         theta2_range=(0, 2*np.pi),
-        N1=60, N2=60,
+        N1=150, N2=150,
         obstacles=obstacles
     )
     cspace.build()
@@ -38,8 +39,9 @@ def main():
     
     # Plot C-space
     plot_cspace(cspace)
-    plot_cspace_components(cspace, start=start, goal=goal, filename="cspace_components_impossible_start_goal.png")
-    plot_workspace(arm, theta1, theta2, obstacles, start=start, goal=goal, cspace=cspace, filename="workspace_impossible_start_goal.png")
+    plot_cspace_components
+    plot_cspace_components(cspace, filename="cspace_components_no_start_goal.png")
+    plot_workspace(arm, theta1, theta2, obstacles, start=start, goal=goal, cspace=cspace, filename="workspace_periodical_theta.png")
     # Q-learning
     ql = QLearning2DOF(
         cspace, 
@@ -51,7 +53,7 @@ def main():
         )
 
     ql.train(
-        num_episodes=5000,   # Più episodi perché molti termineranno presto
+        num_episodes=7500,   # Più episodi perché molti termineranno presto
         max_steps=500,
         verbose=True
     )
@@ -59,10 +61,10 @@ def main():
     # Percorso trovato
     path = ql.get_path()
     print("Learned path:", path)
-    animate_training_path(arm, path, cspace, obstacles, start=start, goal=goal, filename="training_path_impossible.gif")
+    animate_training_path(arm, path, cspace, obstacles, start=start, goal=goal, filename="training_periodical_theta.gif")
     
     # Plotta workspace
-    plot_workspace_path(arm, path, cspace, start=start, goal=goal, filename="workspace_path_impossible.png")
+    plot_workspace_path(arm, path, cspace, start=start, goal=goal, filename="workspace_periodical_theta.png")
 
 
 if __name__ == "__main__":
