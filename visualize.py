@@ -106,30 +106,6 @@ def plot_cspace_components(cspace, start=None, goal=None, filename="cspace_compo
     plt.savefig(filename, dpi=300)
     plt.show()
 
-
-#def plot_workspace(arm, theta1, theta2, obstacles, filename="workspace.png"):
-    """Plot the workspace with the arm in a given configuration and obstacles"""
-    """fig, ax = plt.subplots()
-
-    # Arm
-    segments = arm.get_segments(theta1, theta2)
-    for (p0, p1) in segments:
-        ax.plot([p0[0], p1[0]], [p0[1], p1[1]], "bo-", linewidth=3)
-
-    # Obstacles
-    for obs in obstacles:
-        if hasattr(obs, "bounds"):  # shapely polygon
-            xmin, ymin, xmax, ymax = obs.bounds
-            patch = Polygon(list(obs.exterior.coords), facecolor="red", alpha=0.4)
-            ax.add_patch(patch)
-
-    ax.set_aspect("equal")
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
-    ax.set_title("Workspace: robot + obstacles")
-    plt.show()
-    plt.savefig(filename, dpi=300)"""
-
 def plot_workspace(arm, theta1, theta2, obstacles, start=None, goal=None, cspace=None, filename="workspace.png"):
     """
     Plot the workspace with the arm in a given configuration and obstacles.
@@ -295,7 +271,7 @@ def animate_training_path(arm, path, cspace, obstacles, start, goal, filename="t
             patch = Polygon(list(obs.exterior.coords), facecolor='red', alpha=0.3)
             ax.add_patch(patch)
     
-    # Start and goal positions usando le coordinate passate
+    # Start and goal positions using forward kinematics
     i_s, j_s = start
     i_g, j_g = goal
     start_pos = arm.forward_kinematics(cspace.theta1_vals[i_s], cspace.theta2_vals[j_s])

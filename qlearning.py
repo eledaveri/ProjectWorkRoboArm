@@ -14,22 +14,22 @@ class QLearning2DOF:
         self.gamma = gamma
         self.epsilon_initial = epsilon
         self.epsilon = epsilon
-        self.epsilon_min = 0.01  # Minimo più basso
+        self.epsilon_min = 0.01  
 
         self.start = start
         self.goal = goal if goal else (self.N1-1, self.N2-1)
 
-        # Controlla se start o goal sono in ostacoli
+        # Check whether start and goal are in free space
         if self.cspace.grid[self.start[0], self.start[1]] == 1:
             raise ValueError("Start position is inside an obstacle!")
         
         if self.cspace.grid[self.goal[0], self.goal[1]] == 1:
             raise ValueError("Goal position is inside an obstacle!")
 
-        # Inizializza Q-table con valori piccoli casuali per rompere simmetrie
+        # Initialize Q-table
         self.Q = np.random.randn(self.N1, self.N2, num_actions) * 0.01
         
-        # Contatori per analisi
+        # Counters for analysis
         self.visit_count = np.zeros((self.N1, self.N2))
         self.collision_count = 0
         self.episode_count = 0
@@ -38,7 +38,7 @@ class QLearning2DOF:
         """Executes action in the environment, returns next_state, reward, done"""
         i, j = state
         
-        # Compute new state based on action (CON PERIODICITÀ)
+        # Compute new state based on action (with periodic boundary conditions)
         if action == 0:    # theta1+
             i_new = (i + 1) % self.N1
             j_new = j
@@ -83,7 +83,7 @@ class QLearning2DOF:
         success_count = 0
         collision_count = 0
         
-        # Decay esponenziale più aggressivo
+        # Exponential decay factor for epsilon 
         epsilon_decay = (self.epsilon_min / self.epsilon_initial) ** (1.0 / num_episodes)
         
         for episode in range(num_episodes):
@@ -98,7 +98,7 @@ class QLearning2DOF:
                 next_state, reward, done = self.step(state, action)
                 total_reward += reward
                 
-                # Traccia collisioni
+                # Check for collision
                 if reward == -100.0:
                     had_collision = True
                 
@@ -121,7 +121,7 @@ class QLearning2DOF:
             if had_collision:
                 collision_count += 1
             
-            # Verbose output migliorato
+            # Verbose output 
             if verbose and (episode < 10 or episode % 100 == 0):
                 success_rate = 100.0 * success_count / (episode + 1)
                 collision_rate = 100.0 * collision_count / (episode + 1)
@@ -144,7 +144,7 @@ class QLearning2DOF:
         for step in range(max_steps):
             i, j = state
             
-            # Sceglie la migliore azione
+            # Choose best action
             action = np.argmax(self.Q[i, j, :])
             next_state, reward, done = self.step(state, action)
             

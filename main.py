@@ -17,8 +17,10 @@ def main():
     ]
 
     # Start and goal in the same connected component
-    goal = (140, 25)
-    start  = (115, 60)
+    start = (5,5)
+    goal = (130, 130)
+    #goal = (140, 25)
+    #start  = (115, 60)
 
  
     # Start and goal in different connected components (to test)
@@ -40,7 +42,7 @@ def main():
     # Plot C-space
     plot_cspace(cspace)
     plot_cspace_components
-    plot_cspace_components(cspace, filename="cspace_components_no_start_goal.png")
+    plot_cspace_components(cspace, start=start, goal=goal, filename="cspace_components.png")
     plot_workspace(arm, theta1, theta2, obstacles, start=start, goal=goal, cspace=cspace, filename="workspace_periodical_theta.png")
     # Q-learning
     ql = QLearning2DOF(
@@ -48,23 +50,23 @@ def main():
         start=start, 
         goal=goal,
         alpha=0.1,        # Learning rate
-        gamma=0.95,       # Discount factor (vicino a 1 per percorsi lunghi)
-        epsilon=0.9       # Esplorazione iniziale alta
+        gamma=0.95,       # Discount factor 
+        epsilon=0.9       # Initial exploration rate
         )
 
     ql.train(
-        num_episodes=7500,   # Più episodi perché molti termineranno presto
+        num_episodes=7500,   
         max_steps=500,
         verbose=True
     )
 
-    # Percorso trovato
+    # Get learned path
     path = ql.get_path()
     print("Learned path:", path)
     animate_training_path(arm, path, cspace, obstacles, start=start, goal=goal, filename="training_periodical_theta.gif")
     
-    # Plotta workspace
-    plot_workspace_path(arm, path, cspace, start=start, goal=goal, filename="workspace_periodical_theta.png")
+    # Plot workspace
+    plot_workspace_path(arm, path, cspace, start=start, goal=goal, filename="workspace_periodical_theta_path.png")
 
 
 if __name__ == "__main__":
