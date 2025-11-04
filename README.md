@@ -80,10 +80,10 @@ Where:
 - **ε**: exploration rate (starts at 0.9, decays exponentially to 0.01)
 
 **Action Space**:
-- Action 0: Increase θ₁ \leftarrow  ```i_new = (i + 1) % N₁```
-- Action 1: Decrease θ₁ \leftarrow  ```i_new = (i - 1) % N₁```
-- Action 2: Increase θ₂ \leftarrow  ```j_new = (j + 1) % N₂```
-- Action 3: Decrease θ₂ \leftarrow  ```j_new = (j - 1) % N₂```
+- Action 0: Increase θ₁ $$\rightarrow$$  ```i_new = (i + 1) % N₁```
+- Action 1: Decrease θ₁ $$\rightarrow$$  ```i_new = (i - 1) % N₁```
+- Action 2: Increase θ₂ $$\rightarrow$$  ```j_new = (j + 1) % N₂```
+- Action 3: Decrease θ₂ $$\rightarrow$$ ```j_new = (j - 1) % N₂```
 The modulo operator % implements the periodic wrapping, allowing the agent to explore paths that cross the 0/2π boundary.
 
 **Reward Structure**:
