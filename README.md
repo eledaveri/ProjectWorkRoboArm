@@ -181,16 +181,16 @@ cspace = ConfigurationSpace(
     arm=arm,
     theta1_range=(0, 2*np.pi),
     theta2_range=(0, 2*np.pi),
-    N1=60,  # Discretization steps for θ₁
-    N2=60   # Discretization steps for θ₂
+    N1=150,  # Discretization steps for θ₁
+    N2=150   # Discretization steps for θ₂
 )
 ```
 
 **Start and Goal**:
 ```python
     # Start and goal in the same connected component
-    start = (45, 15)
-    goal = (55, 50)
+    start = (115, 60)
+    goal = (140, 25)
  
     # Start and goal in different connected components (to test)
     start = (15, 45)
@@ -209,7 +209,7 @@ ql = QLearning2DOF(
 )
 
 ql.train(
-    num_episodes=5000,   # Training episodes
+    num_episodes=7500,   # Training episodes
     max_steps=500        # Max steps per episode
 )
 ```
@@ -221,26 +221,33 @@ ql.train(
 The training process provides real-time feedback with comprehensive metrics:
 
 ```
-Episode 0: steps=500, reward=-3895.77, epsilon=0.900, success=0.0%, collisions=100.0%
-Episode 1: steps=500, reward=-2239.68, epsilon=0.899, success=0.0%, collisions=100.0%
-Episode 2: steps=500, reward=-2703.60, epsilon=0.898, success=0.0%, collisions=100.0%
-Episode 3: steps=500, reward=-1720.84, epsilon=0.898, success=0.0%, collisions=100.0%
-Episode 4: steps=500, reward=-2794.63, epsilon=0.897, success=0.0%, collisions=100.0%
-Episode 5: steps=500, reward=-934.58, epsilon=0.896, success=0.0%, collisions=100.0%
-Episode 6: steps=500, reward=-1968.21, epsilon=0.895, success=0.0%, collisions=100.0%
-Episode 7: steps=500, reward=-2594.25, epsilon=0.894, success=0.0%, collisions=100.0%
-Episode 8: steps=500, reward=-3837.18, epsilon=0.894, success=0.0%, collisions=100.0%
-Episode 9: steps=500, reward=-1980.13, epsilon=0.893, success=0.0%, collisions=100.0%
-Episode 100: steps=500, reward=-2116.05, epsilon=0.823, success=3.0%, collisions=98.0%
-Episode 200: steps=500, reward=-3213.57, epsilon=0.752, success=6.0%, collisions=96.5%
-Episode 300: steps=246, reward=-1199.59, epsilon=0.687, success=11.6%, collisions=95.7%
+Episode 0: steps=500, reward=-2829.82, epsilon=0.900, success=0.0%, collisions=100.0%
+Episode 1: steps=500, reward=-746.50, epsilon=0.899, success=0.0%, collisions=50.0%
+Episode 2: steps=500, reward=-777.96, epsilon=0.899, success=0.0%, collisions=33.3%
+Episode 3: steps=500, reward=-971.85, epsilon=0.898, success=0.0%, collisions=50.0%
+Episode 4: steps=500, reward=-1943.05, epsilon=0.898, success=0.0%, collisions=60.0%
+Episode 5: steps=500, reward=-2364.04, epsilon=0.897, success=0.0%, collisions=66.7%
+Episode 6: steps=500, reward=-1411.07, epsilon=0.897, success=0.0%, collisions=71.4%
+Episode 7: steps=500, reward=-642.58, epsilon=0.896, success=0.0%, collisions=62.5%
+Episode 8: steps=500, reward=-1553.60, epsilon=0.896, success=0.0%, collisions=66.7%
+Episode 9: steps=500, reward=-1800.85, epsilon=0.895, success=0.0%, collisions=70.0%
+Episode 100: steps=500, reward=-1051.71, epsilon=0.848, success=1.0%, collisions=86.1%
+Episode 200: steps=500, reward=-1225.22, epsilon=0.798, success=0.5%, collisions=83.6%
+Episode 300: steps=500, reward=-652.12, epsilon=0.752, success=0.7%, collisions=81.7%
+Episode 400: steps=500, reward=-1423.61, epsilon=0.708, success=1.5%, collisions=79.1%
+Episode 500: steps=500, reward=-1676.75, epsilon=0.667, success=2.0%, collisions=78.8%
 ...
-Episode 4900: steps=47, reward=43.91, epsilon=0.011, success=89.3%, collisions=25.3%
+Episode 7000: steps=62, reward=21.15, epsilon=0.013, success=59.9%, collisions=29.7%
+Episode 7100: steps=60, reward=23.30, epsilon=0.013, success=60.5%, collisions=29.3%
+Episode 7200: steps=62, reward=20.37, epsilon=0.012, success=61.0%, collisions=28.9%
+Episode 7300: steps=60, reward=23.30, epsilon=0.011, success=61.5%, collisions=28.5%
+Episode 7400: steps=60, reward=23.30, epsilon=0.011, success=62.1%, collisions=28.1%
 
-Training completed. Final success rate: 89.5%
-Collision rate: 24.8%
-Visited states: 887 / 3600
-Goal reached in 46 steps!
+Training completed. Final success rate: 62.6%
+Collision rate: 27.7%
+Visited states: 6417 / 22500
+Goal reached in 61 steps!
+Learned path: [(115, 60), (116, 60), (117, 60), (118, 60), (119, 60), (120, 60), (121, 60), (121, 59), (122, 59), (122, 58), (123, 58), (124, 58), (125, 58), (125, 57), (126, 57), (126, 56), (127, 56), (128, 56), (129, 56), (129, 55), (130, 55), (130, 54), (131, 54), (131, 53), (131, 52), (131, 51), (132, 51), (132, 50), (132, 49), (132, 48), (132, 47), (132, 46), (132, 45), (132, 44), (133, 44), (133, 43), (133, 42), (134, 42), (135, 42), (136, 42), (137, 42), (138, 42), (139, 42), (139, 41), (139, 40), (139, 39), (139, 38), (139, 37), (139, 36), (139, 35), (139, 34), (139, 33), (139, 32), (139, 31), (139, 30), (139, 29), (139, 28), (139, 27), (139, 26), (140, 26), (140, 25)]
 ```
 
 #### Training Metrics Explained
@@ -251,6 +258,7 @@ Goal reached in 46 steps!
 - **Success Rate**: Percentage of episodes where the goal was successfully reached
 - **Collision Rate**: Percentage of episodes that encountered at least one collision
 - **Visited States**: Total unique C-space configurations explored during training
+- **Learned Path**: The sequence of states
 
 ### Generated Outputs
 
@@ -259,8 +267,8 @@ The training pipeline produces the following visualizations:
 1. **`cspace.png`**: Visualizes the configuration space with free space (white) and C-space obstacles (blue)
      ![cspace](images/cspace.png)
 2. **`cspace_components.png`**: Shows connected components of free space, where each component is colored differently. The red regions represent obstacles. This visualization helps verify that start and goal are in the same connected component
-    ![cspace components](images/cspace_components.png)
-    ![cspace components](images/cspace_components_start_goal.png)
+    ![cspace components](images/cspace_components_no_start_goal.png)
+    ![cspace components](images/cspace_components_periodical_theta.png)
     ![cspace components](images/cspace_components_impossible_start_goal.png)
 3. **`workspace.png`**: Shows the arm in initial configuration with obstacles, highlighting start (green) and goal (blue) positions
     ![workspace](images/workspace.png)
@@ -272,10 +280,10 @@ The training pipeline produces the following visualizations:
    - Start position marked with a green star
    - Goal position marked with a gold star
    - Step counter in the title
-    ![robot motion](images/training_path_collision-100.gif)
+    ![robot motion](images/training_periodical_theta.gif)
     ![robot motion](images/training_path_impossible.gif)
 5. **`workspace_path.png`**: Displays the learned trajectory in workspace coordinates, showing the end-effector path from start (green) to goal (blue) with obstacles in the background
-    ![workspace path](images/workspace_path_collision-100.png)
+    ![workspace path](images/workspace_periodical_theta.png)
     ![workspace path](images/workspace_path_impossible.png)
 
 
@@ -291,12 +299,12 @@ Key indicators of algorithm performance:
 
 ### Typical Results
 
-With the default configuration (60×60 C-space, 5000 episodes):
+With the default configuration (150×150 C-space, 7500 episodes):
 
-- **Final path length**: ~35-50 steps (depending on obstacle configuration)
+- **Final path length**: ~35-65 steps (depending on obstacle configuration)
 - **Training time**: 30-90 seconds on modern hardware
 - **Success rate**: 85-95% after full training
-- **State coverage**: 800-1200 states visited out of 3600 total
+- **State coverage**: 4500-6400 states visited out of 22500 total
 - **Smooth trajectory**: The learned path exhibits smooth motion with adequate obstacle clearance
 
 
