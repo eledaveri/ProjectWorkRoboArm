@@ -201,9 +201,9 @@ cspace = ConfigurationSpace(
 
 **Start and Goal**:
 ```python
-    # Start and goal in the same connected component
-    start = (115, 60)
-    goal = (140, 25)
+    # Start and goal in the same connected component (the value on the right are to test if the component at the bottom left is connected to the one on the right)
+    start = (115, 60) # (5, 5)
+    goal = (140, 25) # (130, 130)
  
     # Start and goal in different connected components (to test)
     start = (15, 45)
@@ -280,11 +280,13 @@ The training pipeline produces the following visualizations:
 1. **`cspace.png`**: Visualizes the configuration space with free space (white) and C-space obstacles (blue)
      ![cspace](images/cspace.png)
 2. **`cspace_components.png`**: Shows connected components of free space, where each component is colored differently. The red regions represent obstacles. This visualization helps verify that start and goal are in the same connected component
-    ![cspace components](images/cspace_components_no_start_goal.png)
+    ![cspace components](images/cspace_components.png)
     ![cspace components](images/cspace_components_periodical_theta.png)
+    ![cspace components](images/cspace_periodic_components.png)
     ![cspace components](images/cspace_components_impossible_start_goal.png)
 3. **`workspace.png`**: Shows the arm in initial configuration with obstacles, highlighting start (green) and goal (blue) positions
     ![workspace](images/workspace.png)
+    ![workspace](images/workspace_periodical_theta2.png)
     ![workspace](images/workspace_impossible_start_goal.png)
 4. **`robot_motion.gif`**: Animated visualization of the complete robot arm executing the learned path, with:
    - The two-link arm shown in blue
@@ -294,9 +296,11 @@ The training pipeline produces the following visualizations:
    - Goal position marked with a gold star
    - Step counter in the title
     ![robot motion](images/training_periodical_theta.gif)
+    ![robot motion](images/training.gif)
     ![robot motion](images/training_path_impossible.gif)
 5. **`workspace_path.png`**: Displays the learned trajectory in workspace coordinates, showing the end-effector path from start (green) to goal (blue) with obstacles in the background
     ![workspace path](images/workspace_periodical_theta.png)
+    ![workspace path](images/workspace_periodical_theta_path.png)
     ![workspace path](images/workspace_path_impossible.png)
 
 
