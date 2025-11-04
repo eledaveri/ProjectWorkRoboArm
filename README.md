@@ -84,6 +84,7 @@ Where:
 - Action 1: Decrease θ₁ $$\rightarrow$$  ```i_new = (i - 1) % N₁```
 - Action 2: Increase θ₂ $$\rightarrow$$  ```j_new = (j + 1) % N₂```
 - Action 3: Decrease θ₂ $$\rightarrow$$ ```j_new = (j - 1) % N₂```
+  
 The modulo operator % implements the periodic wrapping, allowing the agent to explore paths that cross the 0/2π boundary.
 
 **Reward Structure**:
