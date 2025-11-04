@@ -34,6 +34,18 @@ The **configuration space** (C-space) is a mathematical representation where eac
 - **C-Space**: $C = C_{\text{free}} \cup C_{\text{obs}}$
 - **Robot Motion Planning**: Finding a collision-free path in C-space that moves the robot from start to goal as fast as possible and then map it to a  
     valid motion in the workspace.
+  
+This implementation treats the configuration space as periodic (toroidal topology):
+- Joint angles wrap around at the boundaries: θ ∈ [0, 2π)
+- Moving beyond 2π wraps back to 0, and moving below 0 wraps to 2π
+- This reflects the physical reality that 0° and 360° represent the same arm configuration
+- Mathematical representation: States at indices 0 and N-1 are adjacent in the discretized grid
+
+Advantages:
+
+- More natural representation of rotational joints
+- Enables shorter paths that cross the boundary
+- Better connectivity in the free configuration space
 
 ### Forward Kinematics
 
@@ -68,10 +80,11 @@ Where:
 - **ε**: exploration rate (starts at 0.9, decays exponentially to 0.01)
 
 **Action Space**:
-- Action 0: Increase θ₁
-- Action 1: Decrease θ₁
-- Action 2: Increase θ₂
-- Action 3: Decrease θ₂
+- Action 0: Increase θ₁ \leftarrow  ```i_new = (i + 1) % N₁```
+- Action 1: Decrease θ₁ \leftarrow  ```i_new = (i - 1) % N₁```
+- Action 2: Increase θ₂ \leftarrow  ```j_new = (j + 1) % N₂```
+- Action 3: Decrease θ₂ \leftarrow  ```j_new = (j - 1) % N₂```
+The modulo operator % implements the periodic wrapping, allowing the agent to explore paths that cross the 0/2π boundary.
 
 **Reward Structure**:
 - Goal reached: +100
@@ -316,17 +329,42 @@ With the default configuration (150×150 C-space, 7500 episodes):
 - Low success rate (<10%)
 - Algorithm explores the state space
 
-**Learning Phase (Episodes 500-2000)**:
-- Moderate exploration (ε ≈ 0.7-0.3)
-- Success rate increases significantly (10-50%)
-- Q-values begin to converge
-- Collision rate decreases as better paths are found
+**Learning Phase (Episodes 500-1500)**:
+- Moderate-high exploration (ε ≈ 0.67-0.37)
+- Moderate-high exploration (ε ≈ 0.67-0.37)
+- Collision rate remains high (~70-79%)
+- Q-values start to differentiate between good and bad actions
+- First successful paths are discovered
 
-**Exploitation Phase (Episodes 2000-5000)**:
-- Low exploration (ε ≈ 0.3-0.01)
-- High success rate (>80%)
-- Refined policy with shorter paths
-- Consistent performance
+**Rapid Improvement Phase (Episodes 1500-3500)**:
+- Moderate exploration (ε ≈ 0.37-0.11)
+- Success rate increases significantly (18-40%)
+- Collision rate decreases steadily (~70% → 52%)
+- Q-values converge toward optimal paths
+- Agent learns to navigate around major obstacles
+
+**Refinement Phase (Episodes 3500-5500)**:
+- Low exploration (ε ≈ 0.11-0.03)
+- Success rate continues to grow (40-52%)
+- Path lengths begin to stabilize and shorten
+- Agent refines strategy and discovers more efficient routes
+- Collision rate continues to decrease (~52% → 37%)
+
+**Exploitation Phase (Episodes 5500-7500)**:
+- Minimal exploration (ε ≈ 0.03-0.01)
+- High success rate (52-64%)
+- Consistent short paths (60-70 steps typical)
+- Collision rate stabilizes (~35% → 28%)
+- Policy converges to near-optimal behavior
+- Episode rewards become consistently positive
+
+###Impact of Periodic Boundaries
+The periodic configuration space implementation offers several advantages:
+
+- **Natural Representation**: Angles naturally wrap around at 2π, reflecting the physical reality of rotational joints
+- **Improved Connectivity**: States at opposite boundaries are adjacent, potentially creating shorter paths
+- **Better Path Efficiency**: The agent can learn paths that cross the 0/2π boundary if beneficial
+- **Enhanced Exploration**: More natural state transitions reduce artificial barriers in the configuration space
 
 ### Collision Handling
 
@@ -388,6 +426,12 @@ Solution: Choose different start/goal indices that are in free space.
 - Reduce C-space resolution
 - Decrease number of episodes
 - Optimize collision checking
+
+**Understanding Periodic Boundary Effects**:
+
+- Paths may appear discontinuous in C-space visualizations when crossing the 0/2π boundary
+- In workspace, such paths represent continuous, valid robot motions
+- Connected component analysis accounts for periodic topology
 
 ## License
 
